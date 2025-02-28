@@ -5,22 +5,35 @@ import { useState } from 'react';
 
 export default function App() {
   const [randoCoordinates, setRandomCoordinates] = useState({ x: 0, y: 0 });
-  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
+  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0, x:0, y:0 });
 
   const randomizeCoordinates = () => {
     const relativeDimensions = {
-      width: containerDimensions.width + 64,
-      height: containerDimensions.height + 400,
+      width: Math.floor(SCREEN_WIDTH) - Math.floor(containerDimensions.x),
+      height: Math.floor(0) - Math.floor(containerDimensions.y) + 120,
     }
-    const x = Math.floor(Math.random() * relativeDimensions.width);
-    const y = Math.floor(Math.random() * relativeDimensions.height);
+    // x: -100 || 0; y: +120 || +160;
+    let x = Math.floor(Math.random() * SCREEN_WIDTH) - Math.floor(containerDimensions.x);
+    let y = Math.floor(Math.random() * SCREEN_HEIGHT) - Math.floor(containerDimensions.y) + 120;
+
+    if (x >= relativeDimensions.width -100) {
+      x = relativeDimensions.width - 100;
+    }
+
+    if (y <= relativeDimensions.height + 40) {
+      y = relativeDimensions.height + 160;
+    }
+
     setRandomCoordinates({ x, y });
   };
 
   const handleContainerLayout = (event: LayoutChangeEvent) => {
-    const { width, height } = event.nativeEvent.layout;
-    setContainerDimensions({ width, height });
+    const { width, height, x, y } = event.nativeEvent.layout;
+    console.log("x:", x, "y:", y);
+    console.log("width:", width, "height:", height);
+    setContainerDimensions({ width, height, x, y });
   };
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
